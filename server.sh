@@ -1,7 +1,10 @@
 #!/bin/bash
 ###############################################################
-. server.conf
+BASEDIR=$(dirname "$BASH_SOURCE")
+. $BASEDIR/server.conf
 ###############################################################
+
+
 main() {
     local var now=$(date +"%Y-%m-%d %T")
     echo "Servidor MQTT - "$now
@@ -44,7 +47,7 @@ create_table(){
                     VALUE DOUBLE \
                 )"
 
-    sudo mysql --defaults-file=sql.ini -e "$query" teste
+    sudo mysql --defaults-file=$BASEDIR/sql.ini -e "$query" teste
 }
 ###############################################################
 insert_value(){
@@ -60,7 +63,7 @@ insert_value(){
                 "$value" \
             )"
                     
-    sudo mysql --defaults-file=sql.ini -e "$query" teste
+    sudo mysql --defaults-file=$BASEDIR/sql.ini -e "$query" teste
 }
 ###############################################################
 process(){
@@ -102,7 +105,7 @@ send(){
                                 DATE_TIME DESC \
                             LIMIT 1"
                             
-            local var value=$(sudo mysql --defaults-file=sql.ini -N -e "$query" teste)
+            local var value=$(sudo mysql --defaults-file=$BASEDIR/sql.ini -N -e "$query" teste)
 
             local var min_var=$type"_min"
             local var max_var=$type"_max"
