@@ -1,4 +1,5 @@
 #!/bin/bash
+
 ###############################################################
 BASEDIR=$(dirname "$BASH_SOURCE")
 . $BASEDIR/server.conf
