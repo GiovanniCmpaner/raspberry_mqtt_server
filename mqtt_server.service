@@ -1,0 +1,15 @@
+#sudo nano /etc/systemd/system/mqtt_server.service
+#sudo systemctl daemon-reload
+#sudo systemctl enable mqtt_server.service
+#sudo systemctl start mqtt_server.service
+
+[Unit]
+Description=MQTT Server
+
+[Service]
+Type=oneshot
+ExecStart=/home/pi/Desktop/raspberry_mqtt_server/start.sh
+
+[Install]
+WantedBy=multi-user.target
+

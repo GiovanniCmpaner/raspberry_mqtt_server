@@ -97,30 +97,32 @@ send(){
     local var last_action
     for (( ; ; ))
     do
-        if [ -f $type"_log" ]; then
-            local var query="SELECT \
-                                CAST( VALUE AS INT ) \
-                            FROM \
-                                "$type"_data \
-                            ORDER BY  \
-                                DATE_TIME DESC \
-                            LIMIT 1"
-                            
-            local var value=$(sudo mysql --defaults-file=$BASEDIR/sql.ini -N -e "$query" teste)
+        local var query="SELECT \
+                            CAST( VALUE AS INT ) \
+                        FROM \
+                            "$type"_data \
+                        ORDER BY  \
+                            DATE_TIME DESC \
+                        LIMIT 1"
+                        
+        local var value=$(sudo mysql --defaults-file=$BASEDIR/sql.ini -N -e "$query" teste)
 
-            local var min_var=$type"_min"
-            local var max_var=$type"_max"
-            
-            local var action="inactivate"
-            if [ $value -lt ${!min_var} ] || [ $value -gt ${!max_var} ]; then
-                action="activate"
-            fi
-            
-            if [ "$last_action" != "$action" ]; then
-                mosquitto_pub -h localhost -p 1883 -t action -u admin -P admin -m $action
-                last_action=$action
-            fi
+        local var min_var=$type"_min"
+        local var max_var=$type"_max"
+        
+        #echo "Ultimo "$type" = "$value" ("${!min_var}" / "${!max_var}")"
+        
+        local var action="inactivate"
+        if [ $value -lt ${!min_var} ] || [ $value -gt ${!max_var} ]; then
+            action="activate"
         fi
+        
+        if [ "$last_action" != "$action" ]; then
+            echo "Enviado "$action
+            mosquitto_pub -h localhost -p 1883 -t action -u admin -P admin -m $action
+            last_action=$action
+        fi
+        
         sleep 10
     done
 }
